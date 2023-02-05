@@ -5,6 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.core5.net.URIBuilder;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
@@ -24,6 +28,13 @@ public class App {
             HttpResponse<String> response = HTTPHelper.sendGet(uri);
             if (response != null) {
                 System.out.println(response.body());
+
+                try (FileWriter fileWriter = new FileWriter("src/main/java/org/example/result.json")) {
+                    fileWriter.write(response.body());
+                } catch(IOException e) {
+                    System.out.println(e.getMessage());
+                }
+
                 WeatherInfo wInfo = parseWeatherResponse(response.body(), WeatherInfo.class);
                 System.out.println(wInfo);
             }
